@@ -1,13 +1,14 @@
 import {
   createTitle,
-  createButtonProductPurchaseMenu,
-  createButtonProductAddMenu,
-  createButtonManageMenu,
-  createPartProductPurchase,
+  createTabButtonAddProduct,
+  createTabButtonManage,
+  createTabButtonProductPurchase,
+  createPartAddProduct,
   createButtonAddProduct,
   createPartProductStatus,
   createPartCharge,
   createPartHasCoin,
+  createPartInputMoney,
 } from "./views.js";
 
 class VendingMachine {
@@ -16,27 +17,34 @@ class VendingMachine {
   }
 
   init() {
-    // this.createTabProductPurchaseMenu();
-    this.createTabManageMenu();
+    // this.createTabAddProduct();
+    // this.createTabManage();
+    this.createTabProductPurchase();
   }
 
-  createTabProductPurchaseMenu() {
-    createTitle();
-    createButtonProductAddMenu();
-    createButtonProductPurchaseMenu();
-    createButtonManageMenu();
-    createPartProductPurchase();
+  createTabProductPurchase() {
+    this.createHeader();
+    createPartInputMoney();
+  }
+
+  createTabAddProduct() {
+    this.createHeader();
+    createPartAddProduct();
     createButtonAddProduct();
     createPartProductStatus();
   }
 
-  createTabManageMenu() {
-    createTitle();
-    createButtonProductAddMenu();
-    createButtonProductPurchaseMenu();
-    createButtonManageMenu();
+  createTabManage() {
+    this.createHeader();
     createPartCharge();
     createPartHasCoin();
+  }
+
+  createHeader() {
+    createTitle();
+    createTabButtonAddProduct();
+    createTabButtonManage();
+    createTabButtonProductPurchase();
   }
 }
 

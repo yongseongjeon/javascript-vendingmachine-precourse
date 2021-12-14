@@ -8,11 +8,12 @@ export const createElement = (parentID, tag, text, tagID = null) => {
   return el;
 };
 
-export const createInput = (parentID, placeholder, tagID = null) => {
+export const createInput = (parentID, type, placeholder, tagID = null) => {
   const el = document.createElement("input");
   if (tagID) {
     el.setAttribute("id", tagID);
   }
+  el.type = type;
   el.placeholder = placeholder;
   document.getElementById(parentID).appendChild(el);
   return el;
@@ -38,9 +39,11 @@ export const createTable = (tagID, thead = [], tbody = [], tbodyID = []) => {
 
   // create table body
   createElement(tagID, "tbody", null, `${tagID}-tbody`);
-  tbody.forEach((x, i) => {
+  tbody.forEach((row, i) => {
     createElement(`${tagID}-tbody`, "tr", null, `${tagID}-tbody-tr-${i + 1}`);
-    createElement(`${tagID}-tbody-tr-${i + 1}`, "td", x);
-    createElement(`${tagID}-tbody-tr-${i + 1}`, "td", null, tbodyID[i]);
+    // row.forEach((x) => {
+    //   createElement(`${tagID}-tbody-tr-${i + 1}`, "td", x);
+    //   createElement(`${tagID}-tbody-tr-${i + 1}`, "td", null, tbodyID[i]);
+    // });
   });
 };
