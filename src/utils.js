@@ -8,17 +8,6 @@ export const createElement = (parentID, tag, text, tagID = null) => {
   return el;
 };
 
-export const createInput = (parentID, type, placeholder, tagID = null) => {
-  const el = document.createElement("input");
-  if (tagID) {
-    el.setAttribute("id", tagID);
-  }
-  el.type = type;
-  el.placeholder = placeholder;
-  document.getElementById(parentID).appendChild(el);
-  return el;
-};
-
 export const createTable = (tagID, thead = [], tbody = [], tbodyID = []) => {
   // created DOM structure
   // table id = tagID

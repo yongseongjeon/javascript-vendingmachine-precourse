@@ -1,15 +1,8 @@
-import {
-  createTitle,
-  createTabButtonAddProduct,
-  createTabButtonManage,
-  createTabButtonProductPurchase,
-  createPartAddProduct,
-  createButtonAddProduct,
-  createPartProductStatus,
-  createPartCharge,
-  createPartHasCoin,
-  createPartInputMoney,
-} from "./views.js";
+import { createHeader } from "../src/containers/base/header.js";
+import { createTabAddProduct } from "./containers/tab/tabAddProduct.js";
+import { createTabManage } from "../src/containers/tab/tabManage.js";
+import { createTabPurchase } from "./containers/tab/tabPurchase.js";
+import { table } from "./components/table.js";
 
 class VendingMachine {
   constructor() {
@@ -17,34 +10,14 @@ class VendingMachine {
   }
 
   init() {
-    // this.createTabAddProduct();
-    // this.createTabManage();
-    this.createTabProductPurchase();
+    this.drawView();
   }
 
-  createTabProductPurchase() {
-    this.createHeader();
-    createPartInputMoney();
-  }
-
-  createTabAddProduct() {
-    this.createHeader();
-    createPartAddProduct();
-    createButtonAddProduct();
-    createPartProductStatus();
-  }
-
-  createTabManage() {
-    this.createHeader();
-    createPartCharge();
-    createPartHasCoin();
-  }
-
-  createHeader() {
-    createTitle();
-    createTabButtonAddProduct();
-    createTabButtonManage();
-    createTabButtonProductPurchase();
+  drawView() {
+    createHeader();
+    // createTabAddProduct();
+    createTabManage();
+    // createTabPurchase();
   }
 }
 

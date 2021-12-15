@@ -31,4 +31,5 @@ export const STR = {
   SUBTITLE_HAS_COIN: "자판기가 보유한 동전",
   SUBTITLE_INPUT_MONEY: "금액 투입",
   SUBTITLE_CAN_PURCHASE_STATE: "구매할 수 있는 상품 현황",
+  SUBTITLE_CHANGES: "잔돈",
 };
