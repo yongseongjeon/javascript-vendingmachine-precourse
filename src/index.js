@@ -11,6 +11,7 @@ class VendingMachine {
 
   init() {
     this.drawView();
+    showTabAdd();
     this.handleTabMovement();
   }
 
