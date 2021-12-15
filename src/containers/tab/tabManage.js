@@ -31,7 +31,7 @@ export const createTabManage = () => {
         ["50원", ""],
         ["10원", ""],
       ],
-      tbodyID: [
+      tdID: [
         ["", "vending-machine-coin-500-quantity"],
         ["", "vending-machine-coin-100-quantity"],
         ["", "vending-machine-coin-50-quantity"],

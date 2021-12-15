@@ -36,7 +36,7 @@ export const createTabPurchase = () => {
         ["50원", ""],
         ["10원", ""],
       ],
-      tbodyID: [
+      tdID: [
         ["", "coin-500-quantity"],
         ["", "coin-100-quantity"],
         ["", "coin-50-quantity"],
