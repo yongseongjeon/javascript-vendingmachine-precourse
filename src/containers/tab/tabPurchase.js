@@ -1,5 +1,5 @@
 import { STR, TABLE, ID } from "../../constants.js";
-import { createElement, createTable } from "../../utils.js";
+import { createElement } from "../../utils.js";
 import { button } from "../../components/button.js";
 import { input } from "../../components/input.js";
 import { text } from "../../components/text.js";
@@ -35,6 +35,12 @@ export const createTabPurchase = () => {
         ["100원", ""],
         ["50원", ""],
         ["10원", ""],
+      ],
+      tbodyID: [
+        ["", "coin-500-quantity"],
+        ["", "coin-100-quantity"],
+        ["", "coin-50-quantity"],
+        ["", "coin-10-quantity"],
       ],
     });
 

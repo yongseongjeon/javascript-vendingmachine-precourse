@@ -1,4 +1,4 @@
-export const table = ({ id, thead = [], tbody = [[]], tbodyID }) => {
+export const table = ({ id, thead = [], tbody = [[]], tbodyID = [[]] }) => {
   return `<table id="${id}">
   <thead>
     <tr>
@@ -7,7 +7,12 @@ export const table = ({ id, thead = [], tbody = [[]], tbodyID }) => {
   </thead>
   <tbody>
     ${tbody
-      .map((row) => `<tr>${row.map((x) => `<td>${x}</td>`).join("")}</tr>`)
+      .map(
+        (row, i) =>
+          `<tr>${row
+            .map((x, j) => `<td id="${tbodyID[i][j]}">${x}</td>`)
+            .join("")}</tr>`
+      )
       .join("")}
   </tbody>
 </table>`;

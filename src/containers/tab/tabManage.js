@@ -1,5 +1,5 @@
 import { STR, TABLE, ID } from "../../constants.js";
-import { createElement, createTable } from "../../utils.js";
+import { createElement } from "../../utils.js";
 import { button } from "../../components/button.js";
 import { input } from "../../components/input.js";
 import { text } from "../../components/text.js";
@@ -31,8 +31,13 @@ export const createTabManage = () => {
         ["50원", ""],
         ["10원", ""],
       ],
+      tbodyID: [
+        ["", "vending-machine-coin-500-quantity"],
+        ["", "vending-machine-coin-100-quantity"],
+        ["", "vending-machine-coin-50-quantity"],
+        ["", "vending-machine-coin-10-quantity"],
+      ],
     });
 
   document.getElementById("tab-manage").innerHTML = tabManageEl;
-  createTable(TABLE.PRODUCT_ID, TABLE.PRODUCT_HEAD, TABLE.PRODUCT_BODY);
 };
