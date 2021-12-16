@@ -50,7 +50,7 @@ export const getChargeAmountEl = () => {
   return document.getElementById("vending-machine-charge-amount");
 };
 
-export const getCoinQuantityEl = (unit) => {
+export const getCoinQuantityElByUnit = (unit) => {
   return document.getElementById(`vending-machine-coin-${unit}-quantity`);
 };
 

@@ -1,4 +1,11 @@
-import { getAddTabEl, getManageTabEl, getPurchaseTabEl } from "./elements.js";
+import {
+  getAddTabEl,
+  getManageTabEl,
+  getNameEl,
+  getPriceEl,
+  getPurchaseTabEl,
+  getQuantityEl,
+} from "./elements.js";
 
 export const showTabAdd = () => {
   getAddTabEl().style.display = "block";
@@ -16,4 +23,10 @@ export const showTabPurchase = () => {
   getAddTabEl().style.display = "none";
   getManageTabEl().style.display = "none";
   getPurchaseTabEl().style.display = "block";
+};
+
+export const clearAddInput = () => {
+  getNameEl().value = "";
+  getPriceEl().value = "";
+  getQuantityEl().value = "";
 };

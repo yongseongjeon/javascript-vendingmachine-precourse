@@ -2,7 +2,12 @@ import { createHeader } from "../src/containers/base/header.js";
 import { createTabAddProduct } from "./containers/tab/tabAddProduct.js";
 import { createTabManage } from "../src/containers/tab/tabManage.js";
 import { createTabPurchase } from "./containers/tab/tabPurchase.js";
-import { showTabAdd, showTabManage, showTabPurchase } from "./handler.js";
+import {
+  clearAddInput,
+  showTabAdd,
+  showTabManage,
+  showTabPurchase,
+} from "./handler.js";
 import { Product } from "./Product.js";
 import {
   addTableBody,
@@ -14,7 +19,7 @@ import { INIT } from "./constants.js";
 import {
   getChargeInputEl,
   getChargeAmountEl,
-  getCoinQuantityEl,
+  getCoinQuantityElByUnit,
   getChargeBtnEl,
   getAddBtnEl,
   getNameEl,
@@ -34,7 +39,8 @@ class VendingMachine {
       this.products = [];
     }
     this.money = getObjLocalStorage("money");
-    this.coins = INIT.COINS;
+    this.coins = getObjLocalStorage("coins") || INIT.COINS;
+
     this.init();
   }
 
@@ -44,7 +50,14 @@ class VendingMachine {
 
     this.updateTable();
 
+    // 보유 금액 업데이트
     getChargeAmountEl().innerText = this.money;
+
+    // 코인 업데이트
+    const coinUnit = [500, 100, 50, 10];
+    coinUnit.forEach((unit) => {
+      getCoinQuantityElByUnit(unit).innerText = this.coins[unit];
+    });
 
     this.handleChargeMoney();
     this.handleTabMovement();
@@ -57,18 +70,19 @@ class VendingMachine {
     coinUnit.forEach((unit) => {
       const quotient = Math.floor(money / unit);
       const randomNum = getRandomNumber(quotient);
-      const coinQuaintityEl = getCoinQuantityEl(unit);
+      const coinQuaintityEl = getCoinQuantityElByUnit(unit);
       const result = this.coins[unit] + randomNum;
       coinQuaintityEl.innerText = result;
       this.coins[unit] = result;
       money -= randomNum * unit;
     });
     if (money) {
-      const coinQuaintityEl = getCoinQuantityEl(10);
+      const coinQuaintityEl = getCoinQuantityElByUnit(10);
       const result = this.coins[10] + Math.floor(money / 10);
       coinQuaintityEl.innerText = result;
       this.coins[10] = result;
     }
+    setObjLocalStorage("coins", this.coins);
   }
 
   updateMoney(money) {
@@ -109,17 +123,21 @@ class VendingMachine {
 
   handleAddProduct() {
     getAddBtnEl().addEventListener("click", () => {
-      this.addProduct(
+      const prod = [
         getNameEl().value,
         getPriceEl().value,
-        getQuantityEl().value
-      );
-      // TODO: 인풋창 초기화 분리?
-      getNameEl().value = "";
-      getPriceEl().value = "";
-      getQuantityEl().value = "";
+        getQuantityEl().value,
+      ];
+      this.addProduct(...prod);
+      clearAddInput();
     });
   }
+
+  handleTabMovement = () => {
+    getAddTabBtnEl().addEventListener("click", showTabAdd);
+    getManageTabBtnEl().addEventListener("click", showTabManage);
+    getPurchaseTabBtnEl().addEventListener("click", showTabPurchase);
+  };
 
   // View
   drawView() {
@@ -128,12 +146,6 @@ class VendingMachine {
     createTabManage();
     createTabPurchase();
   }
-
-  handleTabMovement = () => {
-    getAddTabBtnEl().addEventListener("click", showTabAdd);
-    getManageTabBtnEl().addEventListener("click", showTabManage);
-    getPurchaseTabBtnEl().addEventListener("click", showTabPurchase);
-  };
 }
 
 const vendingMachine = new VendingMachine();
