@@ -1,32 +1,19 @@
-import { setObjLocalStorage } from "./utils.js";
-
-let tabAddEl = document.getElementById("tab-add");
-let tabManageEl = document.getElementById("tab-manage");
-let tabPurchaseEl = document.getElementById("tab-purchase");
+import { getAddTabEl, getManageTabEl, getPurchaseTabEl } from "./elements.js";
 
 export const showTabAdd = () => {
-  updateTabEl();
-  tabAddEl.style.display = "block";
-  tabManageEl.style.display = "none";
-  tabPurchaseEl.style.display = "none";
+  getAddTabEl().style.display = "block";
+  getManageTabEl().style.display = "none";
+  getPurchaseTabEl().style.display = "none";
 };
 
 export const showTabManage = () => {
-  updateTabEl();
-  tabAddEl.style.display = "none";
-  tabManageEl.style.display = "block";
-  tabPurchaseEl.style.display = "none";
+  getAddTabEl().style.display = "none";
+  getManageTabEl().style.display = "block";
+  getPurchaseTabEl().style.display = "none";
 };
 
 export const showTabPurchase = () => {
-  updateTabEl();
-  tabAddEl.style.display = "none";
-  tabManageEl.style.display = "none";
-  tabPurchaseEl.style.display = "block";
-};
-
-const updateTabEl = () => {
-  tabAddEl = document.getElementById("tab-add");
-  tabManageEl = document.getElementById("tab-manage");
-  tabPurchaseEl = document.getElementById("tab-purchase");
+  getAddTabEl().style.display = "none";
+  getManageTabEl().style.display = "none";
+  getPurchaseTabEl().style.display = "block";
 };

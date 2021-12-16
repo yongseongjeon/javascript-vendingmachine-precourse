@@ -11,6 +11,19 @@ import {
   setObjLocalStorage,
 } from "./utils.js";
 import { INIT } from "./constants.js";
+import {
+  getChargeInputEl,
+  getChargeAmountEl,
+  getCoinQuantityEl,
+  getChargeBtnEl,
+  getAddBtnEl,
+  getNameEl,
+  getPriceEl,
+  getQuantityEl,
+  getAddTabBtnEl,
+  getManageTabBtnEl,
+  getPurchaseTabBtnEl,
+} from "./elements.js";
 
 class VendingMachine {
   constructor() {
@@ -31,53 +44,54 @@ class VendingMachine {
 
     this.updateTable();
 
-    const chargeAmoutID = "vending-machine-charge-amount";
-    document.getElementById(chargeAmoutID).innerText = this.money;
+    getChargeAmountEl().innerText = this.money;
 
     this.handleChargeMoney();
     this.handleTabMovement();
     this.handleAddProduct();
   }
 
-  updateCoins(num, coinUnit) {
-    const coinQuaintity = (unit) => `vending-machine-coin-${unit}-quantity`;
+  updateCoins(num) {
+    const coinUnit = [500, 100, 50];
     let money = num;
     coinUnit.forEach((unit) => {
-      const max = Math.floor(money / unit);
-      const randomNum = getRandomNumber(max);
-      const coinNumEl = document.getElementById(coinQuaintity(unit));
-      coinNumEl.innerText = coinNumEl.value || 0 + randomNum;
+      const quotient = Math.floor(money / unit);
+      const randomNum = getRandomNumber(quotient);
+      const coinQuaintityEl = getCoinQuantityEl(unit);
+      const result = this.coins[unit] + randomNum;
+      coinQuaintityEl.innerText = result;
+      this.coins[unit] = result;
       money -= randomNum * unit;
     });
     if (money) {
-      console.log(money);
-      const quantityEl = document.getElementById(coinQuaintity(10));
-      quantityEl.innerText = Math.floor(money / 10);
+      const coinQuaintityEl = getCoinQuantityEl(10);
+      const result = this.coins[10] + Math.floor(money / 10);
+      coinQuaintityEl.innerText = result;
+      this.coins[10] = result;
     }
   }
 
   updateMoney(money) {
-    document.getElementById("vending-machine-charge-amount").innerText = money;
+    getChargeAmountEl().innerText = money;
     setObjLocalStorage("money", money);
     this.money = money;
   }
 
   chargeMoney(curMoney) {
-    const chargeInputID = "vending-machine-charge-input";
-    const chargeInputEl = document.getElementById(chargeInputID);
-    let money = curMoney + Number(chargeInputEl.value);
-    this.updateCoins(+chargeInputEl.value, [500, 100, 50]);
-    chargeInputEl.value = "";
+    let money = curMoney + Number(getChargeInputEl().value);
+    this.updateCoins(+getChargeInputEl().value);
+    getChargeInputEl().value = "";
     this.updateMoney(money);
   }
 
   handleChargeMoney() {
-    const btnCharge = document.getElementById("vending-machine-charge-button");
-    btnCharge.addEventListener("click", () => this.chargeMoney(this.money));
+    getChargeBtnEl().addEventListener("click", () =>
+      this.chargeMoney(this.money)
+    );
   }
 
   updateTable() {
-    // update table of add product tab
+    // update table of add tab
     this.products.forEach((prod) => {
       addTableBody("product-manage-item", [
         prod.name,
@@ -94,16 +108,16 @@ class VendingMachine {
   }
 
   handleAddProduct() {
-    const tmpEl = document.getElementById("product-add-button");
-    tmpEl.addEventListener("click", () => {
-      const nameEl = document.getElementById("product-name-input");
-      const priceEl = document.getElementById("product-price-input");
-      const quantityEl = document.getElementById("product-quantity-input");
-      this.addProduct(nameEl.value, priceEl.value, quantityEl.value);
+    getAddBtnEl().addEventListener("click", () => {
+      this.addProduct(
+        getNameEl().value,
+        getPriceEl().value,
+        getQuantityEl().value
+      );
       // TODO: 인풋창 초기화 분리?
-      nameEl.value = "";
-      priceEl.value = "";
-      quantityEl.value = "";
+      getNameEl().value = "";
+      getPriceEl().value = "";
+      getQuantityEl().value = "";
     });
   }
 
@@ -116,13 +130,9 @@ class VendingMachine {
   }
 
   handleTabMovement = () => {
-    const btnAddEl = document.getElementById("product-add-menu");
-    const btnManageEl = document.getElementById("vending-machine-manage-menu");
-    const btnPurchaseEl = document.getElementById("product-purchase-menu");
-
-    btnAddEl.addEventListener("click", showTabAdd);
-    btnManageEl.addEventListener("click", showTabManage);
-    btnPurchaseEl.addEventListener("click", showTabPurchase);
+    getAddTabBtnEl().addEventListener("click", showTabAdd);
+    getManageTabBtnEl().addEventListener("click", showTabManage);
+    getPurchaseTabBtnEl().addEventListener("click", showTabPurchase);
   };
 }
 
