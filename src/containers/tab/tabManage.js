@@ -20,7 +20,7 @@ export const createTabManage = () => {
     button({ text: "충전하기", className: "vending-machine-charge-button" }) +
     lineBreak() +
     text({ text: "보유 금액: " }) +
-    text({ text: "", className: "vending-machine-charge-amount" }) +
+    text({ text: "0", id: "vending-machine-charge-amount" }) +
     subTitle({ text: STR.SUBTITLE_HAS_COIN }) +
     table({
       id: TABLE.MANAGE_ID,

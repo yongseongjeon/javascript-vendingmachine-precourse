@@ -23,3 +23,11 @@ export const addTableBody = (tableID, tbody = [], tdClassName = []) => {
     .join("")}</tr>`;
   tbodyEl.insertAdjacentHTML("beforeend", el);
 };
+
+export const getRandomNumber = (n) => {
+  return MissionUtils.Random.pickNumberInList(
+    Array(n + 1)
+      .fill(0)
+      .map((x, i) => x + i)
+  );
+};

@@ -1,3 +1,3 @@
-export const text = ({ text, className = "" }) => {
-  return `<span class="${className}">${text}</span>`;
+export const text = ({ text, id = "" }) => {
+  return `<span id="${id}">${text}</span>`;
 };

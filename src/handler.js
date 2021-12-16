@@ -1,3 +1,5 @@
+import { setObjLocalStorage } from "./utils.js";
+
 let tabAddEl = document.getElementById("tab-add");
 let tabManageEl = document.getElementById("tab-manage");
 let tabPurchaseEl = document.getElementById("tab-purchase");

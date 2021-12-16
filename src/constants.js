@@ -33,3 +33,7 @@ export const STR = {
   SUBTITLE_CAN_PURCHASE_STATE: "구매할 수 있는 상품 현황",
   SUBTITLE_CHANGES: "잔돈",
 };
+
+export const INIT = {
+  COINS: [{ "500원": 0 }, { "100원": 0 }, { "50원": 0 }, { "10원": 0 }],
+};

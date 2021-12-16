@@ -7,8 +7,10 @@ import { Product } from "./Product.js";
 import {
   addTableBody,
   getObjLocalStorage,
+  getRandomNumber,
   setObjLocalStorage,
 } from "./utils.js";
+import { INIT } from "./constants.js";
 
 class VendingMachine {
   constructor() {
@@ -18,21 +20,64 @@ class VendingMachine {
     } else {
       this.products = [];
     }
-    this.money = 0;
+    this.money = getObjLocalStorage("money");
+    this.coins = INIT.COINS;
     this.init();
   }
 
   init() {
     this.drawView();
     showTabAdd();
-    this.handleTabMovement();
 
     this.updateTable();
 
+    const chargeAmoutID = "vending-machine-charge-amount";
+    document.getElementById(chargeAmoutID).innerText = this.money;
+
+    this.handleChargeMoney();
+    this.handleTabMovement();
     this.handleAddProduct();
   }
 
+  updateCoins(num, coinUnit) {
+    const coinQuaintity = (unit) => `vending-machine-coin-${unit}-quantity`;
+    let money = num;
+    coinUnit.forEach((unit) => {
+      const max = Math.floor(money / unit);
+      const randomNum = getRandomNumber(max);
+      const coinNumEl = document.getElementById(coinQuaintity(unit));
+      coinNumEl.innerText = coinNumEl.value || 0 + randomNum;
+      money -= randomNum * unit;
+    });
+    if (money) {
+      console.log(money);
+      const quantityEl = document.getElementById(coinQuaintity(10));
+      quantityEl.innerText = Math.floor(money / 10);
+    }
+  }
+
+  updateMoney(money) {
+    document.getElementById("vending-machine-charge-amount").innerText = money;
+    setObjLocalStorage("money", money);
+    this.money = money;
+  }
+
+  chargeMoney(curMoney) {
+    const chargeInputID = "vending-machine-charge-input";
+    const chargeInputEl = document.getElementById(chargeInputID);
+    let money = curMoney + Number(chargeInputEl.value);
+    this.updateCoins(+chargeInputEl.value, [500, 100, 50]);
+    chargeInputEl.value = "";
+    this.updateMoney(money);
+  }
+
+  handleChargeMoney() {
+    const btnCharge = document.getElementById("vending-machine-charge-button");
+    btnCharge.addEventListener("click", () => this.chargeMoney(this.money));
+  }
+
   updateTable() {
+    // update table of add product tab
     this.products.forEach((prod) => {
       addTableBody("product-manage-item", [
         prod.name,
