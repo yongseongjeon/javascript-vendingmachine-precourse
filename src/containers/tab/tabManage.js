@@ -15,9 +15,9 @@ export const createTabManage = () => {
     input({
       type: "number",
       placeholder: "자판기가 보유할 금액",
-      className: "vending-machine-charge-input",
+      id: "vending-machine-charge-input",
     }) +
-    button({ text: "충전하기", className: "vending-machine-charge-button" }) +
+    button({ text: "충전하기", id: "vending-machine-charge-button" }) +
     lineBreak() +
     text({ text: "보유 금액: " }) +
     text({ text: "0", id: "vending-machine-charge-amount" }) +

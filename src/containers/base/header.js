@@ -8,11 +8,11 @@ export const createHeader = () => {
 
   const headerEl =
     title({ text: STR.TITLE }) +
-    button({ text: STR.TAB_ADD_PRODUCT, className: "product-add-menu" }) +
-    button({ text: STR.TAB_MANAGE, className: "vending-machine-manage-menu" }) +
+    button({ text: STR.TAB_ADD_PRODUCT, id: "product-add-menu" }) +
+    button({ text: STR.TAB_MANAGE, id: "vending-machine-manage-menu" }) +
     button({
       text: STR.TAB_PURCHASE_PRODUCT,
-      className: "product-purchase-menu",
+      id: "product-purchase-menu",
     });
 
   document.getElementById("header").innerHTML = headerEl;

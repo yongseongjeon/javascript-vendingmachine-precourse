@@ -15,11 +15,11 @@ export const createTabPurchase = () => {
     input({
       type: "number",
       placeholder: "투입할 금액",
-      className: "charge-input",
+      id: "charge-input",
     }) +
-    button({ text: "투입하기", className: "charge-button" }) +
+    button({ text: "투입하기", id: "charge-button" }) +
     lineBreak() +
-    text({ text: "투입할 금액: " }) +
+    text({ text: "투입한 금액: " }) +
     text({ text: "", id: "charge-amount" }) +
     subTitle({ text: STR.SUBTITLE_CAN_PURCHASE_STATE }) +
     table({
@@ -27,7 +27,7 @@ export const createTabPurchase = () => {
       thead: TABLE.PURCHASE_HEAD,
     }) +
     subTitle({ text: STR.SUBTITLE_CHANGES }) +
-    button({ text: "반환하기", className: "coin-return-button" }) +
+    button({ text: "반환하기", id: "coin-return-button" }) +
     table({
       thead: ["동전", "갯수"],
       tbody: [

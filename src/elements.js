@@ -70,3 +70,7 @@ export const getInputMoneyBtnEl = () => {
 export const getInputMoneyAmountEl = () => {
   return document.getElementById("charge-amount");
 };
+
+export const getPurchaseBtnEl = () => {
+  return document.getElementsByClassName("purchase-button");
+};

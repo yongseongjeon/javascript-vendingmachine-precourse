@@ -31,6 +31,7 @@ import {
   getInputMoneyEl,
   getInputMoneyBtnEl,
   getInputMoneyAmountEl,
+  getPurchaseBtnEl,
 } from "./elements.js";
 import { input } from "./components/input.js";
 import { button } from "./components/button.js";
@@ -72,6 +73,16 @@ class VendingMachine {
     this.handleChargeMoney();
     this.handleTabMovement();
     this.handleAddProduct();
+    this.handlePurchaseProduct();
+  }
+
+  handlePurchaseProduct() {
+    // TODO: 버튼 눌러서 구매하기 구현
+    Array.from(getPurchaseBtnEl()).forEach((el) => {
+      el.addEventListener("click", (e) => {
+        console.log(e);
+      });
+    });
   }
 
   handleInputMoney = () => {
@@ -152,6 +163,12 @@ class VendingMachine {
     this.products = [...this.products, new Product(name, price, quantity)];
     setObjLocalStorage("products", [...this.products]);
     addTableBody("product-manage-item", [name, price, quantity]);
+    addTableBody("product-purchase-item", [
+      name,
+      price,
+      quantity,
+      button({ className: "purchase-button", text: "구매하기" }),
+    ]);
   }
 
   handleAddProduct() {

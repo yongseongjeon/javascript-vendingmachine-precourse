@@ -13,19 +13,19 @@ export const createTabAddProduct = () => {
     input({
       type: "text",
       placeholder: "상품명",
-      className: "product-name-input",
+      id: "product-name-input",
     }) +
     input({
       type: "number",
       placeholder: "가격",
-      className: "product-price-input",
+      id: "product-price-input",
     }) +
     input({
       type: "number",
       placeholder: "수량",
-      className: "product-quantity-input",
+      id: "product-quantity-input",
     }) +
-    button({ text: "추가하기", className: "product-add-button" }) +
+    button({ text: "추가하기", id: "product-add-button" }) +
     subTitle({ text: STR.SUBTITLE_PRODUCT_STATUS }) +
     table({
       id: TABLE.PRODUCT_ID,
