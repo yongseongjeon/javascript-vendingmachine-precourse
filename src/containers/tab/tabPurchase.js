@@ -20,7 +20,7 @@ export const createTabPurchase = () => {
     button({ text: "투입하기", className: "charge-button" }) +
     lineBreak() +
     text({ text: "투입할 금액: " }) +
-    text({ text: "", className: "charge-amount" }) +
+    text({ text: "", id: "charge-amount" }) +
     subTitle({ text: STR.SUBTITLE_CAN_PURCHASE_STATE }) +
     table({
       id: TABLE.PURCHASE_ID,

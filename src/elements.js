@@ -57,3 +57,16 @@ export const getCoinQuantityElByUnit = (unit) => {
 export const getChargeBtnEl = () => {
   return document.getElementById("vending-machine-charge-button");
 };
+
+// purchase tab elements
+export const getInputMoneyEl = () => {
+  return document.getElementById("charge-input");
+};
+
+export const getInputMoneyBtnEl = () => {
+  return document.getElementById("charge-button");
+};
+
+export const getInputMoneyAmountEl = () => {
+  return document.getElementById("charge-amount");
+};

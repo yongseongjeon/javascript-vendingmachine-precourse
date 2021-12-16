@@ -28,7 +28,12 @@ import {
   getAddTabBtnEl,
   getManageTabBtnEl,
   getPurchaseTabBtnEl,
+  getInputMoneyEl,
+  getInputMoneyBtnEl,
+  getInputMoneyAmountEl,
 } from "./elements.js";
+import { input } from "./components/input.js";
+import { button } from "./components/button.js";
 
 class VendingMachine {
   constructor() {
@@ -40,6 +45,7 @@ class VendingMachine {
     }
     this.money = getObjLocalStorage("money");
     this.coins = getObjLocalStorage("coins") || INIT.COINS;
+    this.inputMoney = getObjLocalStorage("inputMoney");
 
     this.init();
   }
@@ -54,32 +60,49 @@ class VendingMachine {
     getChargeAmountEl().innerText = this.money;
 
     // 코인 업데이트
+    // TODO: 개 분리
     const coinUnit = [500, 100, 50, 10];
     coinUnit.forEach((unit) => {
-      getCoinQuantityElByUnit(unit).innerText = this.coins[unit];
+      getCoinQuantityElByUnit(unit).innerText = `${this.coins[unit]}개`;
     });
 
+    getInputMoneyAmountEl().innerText = this.inputMoney;
+
+    this.handleInputMoney();
     this.handleChargeMoney();
     this.handleTabMovement();
     this.handleAddProduct();
   }
 
+  handleInputMoney = () => {
+    getInputMoneyBtnEl().addEventListener("click", () => {
+      const money = this.inputMoney + Number(getInputMoneyEl().value);
+      getInputMoneyEl().value = "";
+      // TODO: 하위 내용 updateMoeny 함수랑 합칠 수 있을듯.
+      getInputMoneyAmountEl().innerText = money;
+      setObjLocalStorage("inputMoney", money);
+      this.inputMoney = money;
+    });
+  };
+
   updateCoins(num) {
     const coinUnit = [500, 100, 50];
     let money = num;
+    // TODO: 개 분리
+    // TODO: 구조 수정, 중복되는 코드 많음.
     coinUnit.forEach((unit) => {
       const quotient = Math.floor(money / unit);
       const randomNum = getRandomNumber(quotient);
       const coinQuaintityEl = getCoinQuantityElByUnit(unit);
       const result = this.coins[unit] + randomNum;
-      coinQuaintityEl.innerText = result;
+      coinQuaintityEl.innerText = `${result}개`;
       this.coins[unit] = result;
       money -= randomNum * unit;
     });
     if (money) {
       const coinQuaintityEl = getCoinQuantityElByUnit(10);
       const result = this.coins[10] + Math.floor(money / 10);
-      coinQuaintityEl.innerText = result;
+      coinQuaintityEl.innerText = `${result}개`;
       this.coins[10] = result;
     }
     setObjLocalStorage("coins", this.coins);
@@ -92,7 +115,7 @@ class VendingMachine {
   }
 
   chargeMoney(curMoney) {
-    let money = curMoney + Number(getChargeInputEl().value);
+    const money = curMoney + Number(getChargeInputEl().value);
     this.updateCoins(+getChargeInputEl().value);
     getChargeInputEl().value = "";
     this.updateMoney(money);
@@ -111,6 +134,16 @@ class VendingMachine {
         prod.name,
         prod.price,
         prod.quantity,
+      ]);
+    });
+
+    // update table of purchase table
+    this.products.forEach((prod) => {
+      addTableBody("product-purchase-item", [
+        prod.name,
+        prod.price,
+        prod.quantity,
+        button({ className: "purchase-button", text: "구매하기" }),
       ]);
     });
   }
