@@ -80,7 +80,14 @@ class VendingMachine {
     // TODO: 버튼 눌러서 구매하기 구현
     Array.from(getPurchaseBtnEl()).forEach((el) => {
       el.addEventListener("click", (e) => {
-        console.log(e);
+        const curIdx = e.target.id;
+        const curProd = this.products[curIdx];
+        const money = this.inputMoney - curProd.price;
+        this.updateInputMoney(money);
+        curProd.quantity -= 1;
+        document.getElementById(
+          curIdx
+        ).parentNode.previousSibling.innerText -= 1;
       });
     });
   }
@@ -92,7 +99,6 @@ class VendingMachine {
       // TODO: 하위 내용 updateMoeny 함수랑 합칠 수 있을듯.
       getInputMoneyAmountEl().innerText = money;
       setObjLocalStorage("inputMoney", money);
-      this.inputMoney = money;
     });
   };
 
@@ -117,6 +123,12 @@ class VendingMachine {
       this.coins[10] = result;
     }
     setObjLocalStorage("coins", this.coins);
+  }
+
+  updateInputMoney(money) {
+    getInputMoneyAmountEl().innerText = money;
+    setObjLocalStorage("inputMoney", money);
+    this.inputMoney = money;
   }
 
   updateMoney(money) {
@@ -149,14 +161,16 @@ class VendingMachine {
     });
 
     // update table of purchase table
-    this.products.forEach((prod) => {
+    this.products.forEach((prod, idx) => {
       addTableBody("product-purchase-item", [
         prod.name,
         prod.price,
         prod.quantity,
-        button({ className: "purchase-button", text: "구매하기" }),
+        button({ className: "purchase-button", text: "구매하기", id: idx }),
       ]);
     });
+
+    this.products = this.products.filter((prod) => prod.quantity > 0);
   }
 
   addProduct(name, price, quantity) {

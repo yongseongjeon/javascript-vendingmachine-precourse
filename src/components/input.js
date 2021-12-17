@@ -1,6 +1,6 @@
-export const input = ({ className, placeholder, type }) => {
+export const input = ({ id, placeholder, type }) => {
   return `<input 
-            id="${className}" 
+            id="${id}" 
             placeholder="${placeholder}"
             type="${type}" 
           />`;
