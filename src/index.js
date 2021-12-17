@@ -83,6 +83,12 @@ class VendingMachine {
         const curIdx = e.target.id;
         const curProd = this.products[curIdx];
         const money = this.inputMoney - curProd.price;
+
+        if (!this.canPurchase(curProd)) {
+          alert("구매할 수 없습니다.");
+          return;
+        }
+
         this.updateInputMoney(money);
         curProd.quantity -= 1;
         document.getElementById(
@@ -95,12 +101,20 @@ class VendingMachine {
   handleInputMoney = () => {
     getInputMoneyBtnEl().addEventListener("click", () => {
       const money = this.inputMoney + Number(getInputMoneyEl().value);
+      this.inputMoney = money;
       getInputMoneyEl().value = "";
       // TODO: 하위 내용 updateMoeny 함수랑 합칠 수 있을듯.
       getInputMoneyAmountEl().innerText = money;
       setObjLocalStorage("inputMoney", money);
     });
   };
+
+  // 모듈로 분리해야할까? VendingMachine이 들고있는게 맞나?
+  canPurchase(prod) {
+    const isEnoughMoney = this.inputMoney >= prod.price;
+    const isEnoughQuantity = prod.quantity;
+    return isEnoughMoney && isEnoughQuantity;
+  }
 
   updateCoins(num) {
     const coinUnit = [500, 100, 50];
@@ -110,16 +124,16 @@ class VendingMachine {
     coinUnit.forEach((unit) => {
       const quotient = Math.floor(money / unit);
       const randomNum = getRandomNumber(quotient);
-      const coinQuaintityEl = getCoinQuantityElByUnit(unit);
+      const coinQuantityEl = getCoinQuantityElByUnit(unit);
       const result = this.coins[unit] + randomNum;
-      coinQuaintityEl.innerText = `${result}개`;
+      coinQuantityEl.innerText = `${result}개`;
       this.coins[unit] = result;
       money -= randomNum * unit;
     });
     if (money) {
-      const coinQuaintityEl = getCoinQuantityElByUnit(10);
+      const coinQuantityEl = getCoinQuantityElByUnit(10);
       const result = this.coins[10] + Math.floor(money / 10);
-      coinQuaintityEl.innerText = `${result}개`;
+      coinQuantityEl.innerText = `${result}개`;
       this.coins[10] = result;
     }
     setObjLocalStorage("coins", this.coins);
