@@ -25,6 +25,7 @@ export const showTabPurchase = () => {
   getPurchaseTabEl().style.display = "block";
 };
 
+// TOOD: 다른 모듈로 이동
 export const clearAddInput = () => {
   getNameEl().value = "";
   getPriceEl().value = "";

@@ -35,6 +35,7 @@ import {
 } from "./elements.js";
 import { input } from "./components/input.js";
 import { button } from "./components/button.js";
+import { canPurchase } from "./validation.js";
 
 class VendingMachine {
   constructor() {
@@ -44,21 +45,22 @@ class VendingMachine {
     } else {
       this.products = [];
     }
-    this.money = getObjLocalStorage("money");
+    this.changes = getObjLocalStorage("changes") || 0;
     this.coins = getObjLocalStorage("coins") || INIT.COINS;
-    this.inputMoney = getObjLocalStorage("inputMoney");
-
+    this.money = getObjLocalStorage("money") || 0;
+    
     this.init();
+    
   }
 
   init() {
     this.drawView();
-    showTabAdd();
+    // showTabAdd();
 
     this.updateTable();
 
     // 보유 금액 업데이트
-    getChargeAmountEl().innerText = this.money;
+    getChargeAmountEl().innerText = this.changes;
 
     // 코인 업데이트
     // TODO: 개 분리
@@ -67,7 +69,7 @@ class VendingMachine {
       getCoinQuantityElByUnit(unit).innerText = `${this.coins[unit]}개`;
     });
 
-    getInputMoneyAmountEl().innerText = this.inputMoney;
+    getInputMoneyAmountEl().innerText = this.money;
 
     this.handleInputMoney();
     this.handleChargeMoney();
@@ -82,9 +84,9 @@ class VendingMachine {
       el.addEventListener("click", (e) => {
         const curIdx = e.target.id;
         const curProd = this.products[curIdx];
-        const money = this.inputMoney - curProd.price;
+        const money = this.money - curProd.price;
 
-        if (!this.canPurchase(curProd)) {
+        if (!canPurchase(this.money, curProd)) {
           alert("구매할 수 없습니다.");
           return;
         }
@@ -100,21 +102,14 @@ class VendingMachine {
 
   handleInputMoney = () => {
     getInputMoneyBtnEl().addEventListener("click", () => {
-      const money = this.inputMoney + Number(getInputMoneyEl().value);
-      this.inputMoney = money;
+      const money = this.money + Number(getInputMoneyEl().value);
+      this.money = money;
       getInputMoneyEl().value = "";
       // TODO: 하위 내용 updateMoeny 함수랑 합칠 수 있을듯.
       getInputMoneyAmountEl().innerText = money;
       setObjLocalStorage("inputMoney", money);
     });
   };
-
-  // 모듈로 분리해야할까? VendingMachine이 들고있는게 맞나?
-  canPurchase(prod) {
-    const isEnoughMoney = this.inputMoney >= prod.price;
-    const isEnoughQuantity = prod.quantity;
-    return isEnoughMoney && isEnoughQuantity;
-  }
 
   updateCoins(num) {
     const coinUnit = [500, 100, 50];
@@ -142,13 +137,13 @@ class VendingMachine {
   updateInputMoney(money) {
     getInputMoneyAmountEl().innerText = money;
     setObjLocalStorage("inputMoney", money);
-    this.inputMoney = money;
+    this.money = money;
   }
 
   updateMoney(money) {
     getChargeAmountEl().innerText = money;
     setObjLocalStorage("money", money);
-    this.money = money;
+    this.changes = money;
   }
 
   chargeMoney(curMoney) {
@@ -160,7 +155,7 @@ class VendingMachine {
 
   handleChargeMoney() {
     getChargeBtnEl().addEventListener("click", () =>
-      this.chargeMoney(this.money)
+      this.chargeMoney(this.changes)
     );
   }
 
@@ -211,13 +206,13 @@ class VendingMachine {
     });
   }
 
+  // View
   handleTabMovement = () => {
     getAddTabBtnEl().addEventListener("click", showTabAdd);
     getManageTabBtnEl().addEventListener("click", showTabManage);
     getPurchaseTabBtnEl().addEventListener("click", showTabPurchase);
   };
 
-  // View
   drawView() {
     createHeader();
     createTabAddProduct();
