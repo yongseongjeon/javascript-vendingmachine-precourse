@@ -36,4 +36,7 @@ export const STR = {
 
 export const INIT = {
   COINS: { 500: 0, 100: 0, 50: 0, 10: 0 },
+  MONEY: 0,
+  CHANGES: 0,
+  PRODUCTS: [],
 };

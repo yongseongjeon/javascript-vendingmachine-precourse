@@ -43,24 +43,26 @@ class VendingMachine {
     if (getObjLocalStorage("products")) {
       this.products = [...getObjLocalStorage("products")];
     } else {
-      this.products = [];
+      this.products = INIT.PRODUCTS;
     }
-    this.changes = getObjLocalStorage("changes") || 0;
+    this.changes = getObjLocalStorage("changes") || INIT.CHANGES;
     this.coins = getObjLocalStorage("coins") || INIT.COINS;
-    this.money = getObjLocalStorage("money") || 0;
+    this.money = getObjLocalStorage("money") || INIT.MONEY;
     
     this.init();
-    
   }
+
+  
 
   init() {
     this.drawView();
     // showTabAdd();
 
-    this.updateTable();
+    // 상품 현황 테이블 업데이트
+    this.updateProductStatusTable();
 
     // 보유 금액 업데이트
-    getChargeAmountEl().innerText = this.changes;
+    this.updateChanges();
 
     // 코인 업데이트
     // TODO: 개 분리
@@ -76,6 +78,31 @@ class VendingMachine {
     this.handleTabMovement();
     this.handleAddProduct();
     this.handlePurchaseProduct();
+  }
+
+  updateChanges() {
+    getChargeAmountEl().innerText = this.changes;
+  }
+
+  updateProductStatusTable() {
+    // 클래스 변수 갱신
+    this.products = this.products.filter((prod) => prod.quantity > 0);
+    
+    // 상품 현황(추가) 테이블 DOM 갱신
+    this.products.forEach((prod, idx) => {
+      addTableBody("product-manage-item", [
+        prod.name,
+        prod.price,
+        prod.quantity,
+      ]);
+      // TODO: id 다른 값으로 수정
+      addTableBody("product-purchase-item", [
+        prod.name,
+        prod.price,
+        prod.quantity,
+        button({ className: "purchase-button", text: "구매하기", id: idx }),
+      ]);
+    });
   }
 
   handlePurchaseProduct() {
@@ -157,29 +184,6 @@ class VendingMachine {
     getChargeBtnEl().addEventListener("click", () =>
       this.chargeMoney(this.changes)
     );
-  }
-
-  updateTable() {
-    // update table of add tab
-    this.products.forEach((prod) => {
-      addTableBody("product-manage-item", [
-        prod.name,
-        prod.price,
-        prod.quantity,
-      ]);
-    });
-
-    // update table of purchase table
-    this.products.forEach((prod, idx) => {
-      addTableBody("product-purchase-item", [
-        prod.name,
-        prod.price,
-        prod.quantity,
-        button({ className: "purchase-button", text: "구매하기", id: idx }),
-      ]);
-    });
-
-    this.products = this.products.filter((prod) => prod.quantity > 0);
   }
 
   addProduct(name, price, quantity) {
