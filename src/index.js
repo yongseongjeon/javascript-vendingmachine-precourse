@@ -39,20 +39,14 @@ import { canPurchase } from "./validation.js";
 
 class VendingMachine {
   constructor() {
-    // TODO: 가독성 좋게
-    if (getObjLocalStorage("products")) {
-      this.products = [...getObjLocalStorage("products")];
-    } else {
-      this.products = INIT.PRODUCTS;
-    }
+    this.products = getObjLocalStorage("products") || INIT.PRODUCTS
     this.changes = getObjLocalStorage("changes") || INIT.CHANGES;
     this.coins = getObjLocalStorage("coins") || INIT.COINS;
     this.money = getObjLocalStorage("money") || INIT.MONEY;
-    
+    this.productNum = this.products.length;
+
     this.init();
   }
-
-  
 
   init() {
     this.drawView();
@@ -60,7 +54,6 @@ class VendingMachine {
 
     // 상품 현황 테이블 업데이트
     this.updateProductStatusTable();
-
 
     // 코인 업데이트
     // TODO: 개 분리
@@ -100,7 +93,6 @@ class VendingMachine {
     document.querySelector("#product-manage-item tbody").innerHTML = "";
 
     this.products.forEach(prod => {
-      console.log('prod :', prod);
       const prodInfo = [prod.name, prod.price, prod.quantity];
       addTableBody("product-manage-item", prodInfo);
     });
@@ -111,24 +103,30 @@ class VendingMachine {
     Array.from(getPurchaseBtnEl()).forEach((el) => {
       el.addEventListener("click", (e) => {
         const idx = e.target.id;
-        const curProd = this.products[idx];
-        const money = this.money - curProd.price;
-
-        if (!canPurchase(this.money, curProd)) {
-          alert("구매할 수 없습니다.");
-          return;
-        }
-        
-        // update 투입 금액
-        this.updateMoney(money);
-
-        // update 상품 현황(추가, 구매) 클래스 변수
-        this.products[idx].quantity -= 1;
-        document.getElementById(idx).parentNode.previousSibling.innerText -= 1;
-        this.redrawProductAddTable();
-        setObjLocalStorage('products', this.products);
+        this.purchaseProduct(idx);
       });
     });
+  }
+
+  purchaseProduct(idx) {
+    const curProd = this.products[idx];
+    const money = this.money - curProd.price;
+
+    if (!canPurchase(this.money, curProd)) {
+      alert("구매할 수 없습니다.");
+      return;
+    }
+    
+    // update 투입 금액
+    this.updateMoney(money);
+
+    // update 상품 현황(추가, 구매) 클래스 변수
+    this.products[idx].quantity -= 1;
+    // update DOM
+    document.getElementById(idx).parentNode.previousSibling.innerText -= 1;
+    this.redrawProductAddTable();
+    // update localstorage
+    setObjLocalStorage('products', this.products);
   }
     
   updateMoney(money) {
@@ -196,8 +194,9 @@ class VendingMachine {
       name,
       price,
       quantity,
-      button({ className: "purchase-button", text: "구매하기" }),
+      button({ className: "purchase-button", text: "구매하기", id: this.productNum }),
     ]);
+    this.productNum += 1;
   }
 
   handleAddProduct() {
