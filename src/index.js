@@ -28,9 +28,9 @@ import {
   getAddTabBtnEl,
   getManageTabBtnEl,
   getPurchaseTabBtnEl,
-  getInputMoneyEl,
-  getInputMoneyBtnEl,
-  getInputMoneyAmountEl,
+  getMoneyEl,
+  getMoneyBtnEl,
+  getMoneyAmountEl,
   getPurchaseBtnEl,
 } from "./elements.js";
 import { input } from "./components/input.js";
@@ -39,7 +39,7 @@ import { canPurchase } from "./validation.js";
 
 class VendingMachine {
   constructor() {
-    this.products = getObjLocalStorage("products") || INIT.PRODUCTS
+    this.products = getObjLocalStorage("products") || INIT.PRODUCTS;
     this.changes = getObjLocalStorage("changes") || INIT.CHANGES;
     this.coins = getObjLocalStorage("coins") || INIT.COINS;
     this.money = getObjLocalStorage("money") || INIT.MONEY;
@@ -49,53 +49,95 @@ class VendingMachine {
   }
 
   init() {
+    // View
     this.drawView();
-    // showTabAdd();
+    showTabAdd();
 
-    // 상품 현황 테이블 업데이트
-    this.updateProductStatusTable();
+    // Render
+    this.renderProductAddTable();
+    this.renderProductPurchaseTable();
+    this.renderChanges();
+    this.renderCoins();
+    this.renderMoney();
 
-    // 코인 업데이트
-    // TODO: 개 분리
+    // Event
+    this.handleTabMovement();
+    this.handleAddProduct();
+    this.handlePurchaseProduct();
+    this.handleChanges();
+    this.handleMoney();
+  }
+
+  // View
+  drawView() {
+    createHeader();
+    createTabAddProduct();
+    createTabManage();
+    createTabPurchase();
+  }
+
+  // Render
+  renderProductAddTable() {
+    document.querySelector("#product-manage-item tbody").innerHTML = "";
+    this.products.forEach((prod) => {
+      addTableBody("product-manage-item", [
+        prod.name,
+        prod.price,
+        prod.quantity,
+      ]);
+    });
+  }
+  renderProductPurchaseTable() {
+    document.querySelector("#product-purchase-item tbody").innerHTML = "";
+    this.products.forEach((prod) => {
+      addTableBody("product-purchase-item", [
+        prod.name,
+        prod.price,
+        prod.quantity,
+        button({ className: "purchase-button", text: "구매하기", id: prod.id }),
+      ]);
+    });
+  }
+  renderChanges() {
+    getChargeAmountEl().innerText = this.changes;
+    setObjLocalStorage("changes", this.changes);
+  }
+  renderCoins() {
     const coinUnit = [500, 100, 50, 10];
     coinUnit.forEach((unit) => {
       getCoinQuantityElByUnit(unit).innerText = `${this.coins[unit]}개`;
     });
+  }
+  renderMoney() {
+    getMoneyAmountEl().innerText = this.money;
+    setObjLocalStorage("money", this.money);
+  }
 
-    getInputMoneyAmountEl().innerText = this.money;
-
-    this.handleInputMoney();
-    this.handleChargeMoney();
-    this.handleTabMovement();
-    this.handleAddProduct();
+  // Event
+  handleAddProduct() {
+    getAddBtnEl().addEventListener("click", () => {
+      this.addProduct(
+        getNameEl().value,
+        getPriceEl().value,
+        getQuantityEl().value,
+        this.products.length++
+      );
+      clearAddInput();
+    });
+  }
+  addProduct(name, price, quantity, id) {
+    // 클래스 변수 갱신
+    this.products = [...this.products, new Product(name, price, quantity, id)];
+    // TODO: this.products에 null이 껴들어가는 버그가 존재...
+    // 우선 필터링으로 걸러냄
+    this.products = this.products.filter((x) => x !== undefined);
+    // DOM 갱신
+    this.renderProductAddTable();
+    this.renderProductPurchaseTable();
+    // 로컬스토리지 갱신
+    setObjLocalStorage("products", this.products);
+    // eventListener 추가
     this.handlePurchaseProduct();
-  }
-
-  updateChanges() {
-    getChargeAmountEl().innerText = this.changes;
-  }
-
-  updateProductStatusTable() {
-    // 상품 현황(추가) 테이블 DOM 갱신
-    this.products.forEach((prod, idx) => {
-      const prodInfo = [prod.name, prod.price, prod.quantity];
-      addTableBody("product-manage-item", prodInfo);
-      // TODO: id 다른 값으로 수정
-      addTableBody("product-purchase-item", [
-        ...prodInfo,
-        button({ className: "purchase-button", text: "구매하기", id: idx }),
-      ]);
-    });
-  }
-
-  redrawProductAddTable() {
-    // clear table body
-    document.querySelector("#product-manage-item tbody").innerHTML = "";
-
-    this.products.forEach(prod => {
-      const prodInfo = [prod.name, prod.price, prod.quantity];
-      addTableBody("product-manage-item", prodInfo);
-    });
   }
 
   handlePurchaseProduct() {
@@ -107,42 +149,41 @@ class VendingMachine {
       });
     });
   }
-
   purchaseProduct(idx) {
     const curProd = this.products[idx];
-    const money = this.money - curProd.price;
 
     if (!canPurchase(this.money, curProd)) {
       alert("구매할 수 없습니다.");
       return;
     }
-    
+
+    this.money -= curProd.price;
     // update 투입 금액
-    this.updateMoney(money);
+    this.renderMoney();
 
-    // update 상품 현황(추가, 구매) 클래스 변수
+    // 클래스 변수 갱신
     this.products[idx].quantity -= 1;
-    // update DOM
-    document.getElementById(idx).parentNode.previousSibling.innerText -= 1;
-    this.redrawProductAddTable();
-    // update localstorage
-    setObjLocalStorage('products', this.products);
-  }
-    
-  updateMoney(money) {
-    this.money = money;
-    getInputMoneyAmountEl().innerText = money;
-    setObjLocalStorage("money", money);
+    // DOM 갱신
+    this.renderProductAddTable();
+    this.renderProductPurchaseTable();
+    // 로컬스토리지 갱신
+    setObjLocalStorage("products", this.products);
+    // eventListener 추가
+    this.handlePurchaseProduct();
   }
 
-  handleInputMoney = () => {
-    getInputMoneyBtnEl().addEventListener("click", () => {
-    const money = this.money + Number(getInputMoneyEl().value);
-    getInputMoneyEl().value = "";
-    this.updateMoney(money);
+  handleChanges() {
+    getChargeBtnEl().addEventListener("click", () => {
+      const chargeChanges = Number(getChargeInputEl().value);
+      this.chargeChanges(chargeChanges);
+      this.updateCoins(chargeChanges);
     });
-  };
-
+  }
+  chargeChanges(chargeChanges) {
+    this.changes += chargeChanges;
+    getChargeInputEl().value = "";
+    this.renderChanges();
+  }
   updateCoins(num) {
     const coinUnit = [500, 100, 50];
     let money = num;
@@ -166,49 +207,16 @@ class VendingMachine {
     setObjLocalStorage("coins", this.coins);
   }
 
-
-  updateChanges(money) {
-    getChargeAmountEl().innerText = money;
-    setObjLocalStorage("changes", money);
-    this.changes = money;
-  }
-
-  chargeMoney(curMoney) {
-    const money = curMoney + Number(getChargeInputEl().value);
-    this.updateCoins(+getChargeInputEl().value);
-    getChargeInputEl().value = "";
-    this.updateMoney(money);
-  }
-
-  handleChargeMoney() {
-    getChargeBtnEl().addEventListener("click", () =>
-      this.chargeMoney(this.changes)
-    );
-  }
-
-  addProduct(name, price, quantity) {
-    this.products = [...this.products, new Product(name, price, quantity)];
-    setObjLocalStorage("products", [...this.products]);
-    addTableBody("product-manage-item", [name, price, quantity]);
-    addTableBody("product-purchase-item", [
-      name,
-      price,
-      quantity,
-      button({ className: "purchase-button", text: "구매하기", id: this.productNum }),
-    ]);
-    this.productNum += 1;
-  }
-
-  handleAddProduct() {
-    getAddBtnEl().addEventListener("click", () => {
-      const prod = [
-        getNameEl().value,
-        getPriceEl().value,
-        getQuantityEl().value,
-      ];
-      this.addProduct(...prod);
-      clearAddInput();
+  handleMoney = () => {
+    getMoneyBtnEl().addEventListener("click", () => {
+      this.chargeMoney();
     });
+  };
+  chargeMoney() {
+    const money = this.money + Number(getMoneyEl().value);
+    getMoneyEl().value = "";
+    this.money = money;
+    this.renderMoney();
   }
 
   // View
@@ -217,13 +225,6 @@ class VendingMachine {
     getManageTabBtnEl().addEventListener("click", showTabManage);
     getPurchaseTabBtnEl().addEventListener("click", showTabPurchase);
   };
-
-  drawView() {
-    createHeader();
-    createTabAddProduct();
-    createTabManage();
-    createTabPurchase();
-  }
 }
 
 const vendingMachine = new VendingMachine();

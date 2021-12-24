@@ -59,15 +59,15 @@ export const getChargeBtnEl = () => {
 };
 
 // purchase tab elements
-export const getInputMoneyEl = () => {
+export const getMoneyEl = () => {
   return document.getElementById("charge-input");
 };
 
-export const getInputMoneyBtnEl = () => {
+export const getMoneyBtnEl = () => {
   return document.getElementById("charge-button");
 };
 
-export const getInputMoneyAmountEl = () => {
+export const getMoneyAmountEl = () => {
   return document.getElementById("charge-amount");
 };
 
