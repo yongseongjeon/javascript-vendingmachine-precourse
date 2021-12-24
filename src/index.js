@@ -33,7 +33,6 @@ import {
   getMoneyAmountEl,
   getPurchaseBtnEl,
 } from "./elements.js";
-import { input } from "./components/input.js";
 import { button } from "./components/button.js";
 import { canPurchase } from "./validation.js";
 
@@ -43,7 +42,6 @@ class VendingMachine {
     this.changes = getObjLocalStorage("changes") || INIT.CHANGES;
     this.coins = getObjLocalStorage("coins") || INIT.COINS;
     this.money = getObjLocalStorage("money") || INIT.MONEY;
-    this.productNum = this.products.length;
 
     this.init();
   }
@@ -139,7 +137,6 @@ class VendingMachine {
     // eventListener 추가
     this.handlePurchaseProduct();
   }
-
   handlePurchaseProduct() {
     // TODO: 버튼 눌러서 구매하기 구현
     Array.from(getPurchaseBtnEl()).forEach((el) => {
@@ -171,7 +168,6 @@ class VendingMachine {
     // eventListener 추가
     this.handlePurchaseProduct();
   }
-
   handleChanges() {
     getChargeBtnEl().addEventListener("click", () => {
       const chargeChanges = Number(getChargeInputEl().value);
@@ -187,26 +183,21 @@ class VendingMachine {
   updateCoins(num) {
     const coinUnit = [500, 100, 50];
     let money = num;
-    // TODO: 개 분리
     // TODO: 구조 수정, 중복되는 코드 많음.
     coinUnit.forEach((unit) => {
       const quotient = Math.floor(money / unit);
       const randomNum = getRandomNumber(quotient);
-      const coinQuantityEl = getCoinQuantityElByUnit(unit);
       const result = this.coins[unit] + randomNum;
-      coinQuantityEl.innerText = `${result}개`;
       this.coins[unit] = result;
       money -= randomNum * unit;
     });
     if (money) {
-      const coinQuantityEl = getCoinQuantityElByUnit(10);
       const result = this.coins[10] + Math.floor(money / 10);
-      coinQuantityEl.innerText = `${result}개`;
       this.coins[10] = result;
     }
+    this.renderCoins();
     setObjLocalStorage("coins", this.coins);
   }
-
   handleMoney = () => {
     getMoneyBtnEl().addEventListener("click", () => {
       this.chargeMoney();
@@ -218,8 +209,6 @@ class VendingMachine {
     this.money = money;
     this.renderMoney();
   }
-
-  // View
   handleTabMovement = () => {
     getAddTabBtnEl().addEventListener("click", showTabAdd);
     getManageTabBtnEl().addEventListener("click", showTabManage);
